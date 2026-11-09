@@ -1,11 +1,18 @@
-from flask import Flask, request                                                                import requests
-from bs4 import BeautifulSoup                                                                   import urllib.parse
-import threading                                                                                import subprocess
-import os                                                                                       import datetime
+from flask import Flask, request
+import requests
+from bs4 import BeautifulSoup
+import urllib.parse
+import threading
+import subprocess
+import os
+import datetime
 import logging                                                                                  
-log = logging.getLogger('werkzeug')                                                             log.setLevel(logging.ERROR)
-                                                                                                app = Flask(__name__)
-                                                                                                target_site = ""
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+app = Flask(__name__)
+target_site = ""
+
+
 LOCAL_PAGE = "index_local.html"
 server_started = False
 
