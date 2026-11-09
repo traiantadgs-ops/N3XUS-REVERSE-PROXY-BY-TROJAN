@@ -12,4 +12,4 @@ NRP.py — это легкий консольный инструмент на Py
 
 ### Установка и запуск в Termux
    ```bash
-   pkg update && pkg upgrade -y && pkg install python git cloudflared -y && pip install flask requests beautifulsoup4 && git clone https://github.com/traiantadgs-ops/N3XUS-REVERSE-PROXY-BY-TROJAN.git && cd NRP.py && python NRP.py
+   pkg update && pkg upgrade -y && pkg install python git cloudflared -y && pip install flask requests beautifulsoup4 && git clone https://github.com/traiantadgs-ops/N3XUS-REVERSE-PROXY-BY-TROJAN.git && cd N3XUS-REVERSE-PROXY-BY-TROJAN && python NRP.py
