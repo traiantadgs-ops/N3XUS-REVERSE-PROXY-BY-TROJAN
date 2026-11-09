@@ -11,8 +11,6 @@ NRP.py — это легкий консольный инструмент на Py
 ---
 
 ### Установка и запуск в Termux
-
-1. Обновите пакеты и установите зависимости:
    ```bash
    pkg update && pkg upgrade -y
    pkg install python git cloudflared -y
