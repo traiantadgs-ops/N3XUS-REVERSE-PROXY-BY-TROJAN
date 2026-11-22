@@ -224,15 +224,15 @@ def run_tunnel():
 if __name__ == "__main__":
     while True:
         os.system("clear")
-        print("="*40)
-        print("         N3XUS REVERSE PROXY")
-        print("              by TROJAN     ")
-        print("="*40)
-        print(" [1] Указать ссылку и запустить зеркало (Обычный)")
-        print(" [2] Запустить зеркало + Troll Edition 🧽")
-        print(" [3] Посмотреть пойманные данные (captured.txt)")
+        print("="*50)
+        print("              N3XUS REVERSE PROXY")
+        print("                   by TROJAN     ")
+        print("="*50)
+        print(" [1] вставить ссылку")
+        print(" [2] вставить ссылку + Troll Edition")
+        print(" [3] Посмотреть пойманные данные")
         print(" [4] Выход")
-        print("="*40)
+        print("="*50)
 
         choice = input("Выберите пункт: ").strip()
 
